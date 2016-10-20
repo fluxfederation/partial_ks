@@ -16,6 +16,7 @@ PartialKs::Runner.new([config]).run!
 TODO :
 
 Rename PartialKs::ConfigurationGenerator#call to something better
+What in the world is `manual_configuration` meant to be ?
 Minimize Public API
 Get license approval (MIT)
 
