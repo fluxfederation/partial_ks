@@ -18,8 +18,8 @@ You can specify manual configurations if needed.
 
 ```
 manual_configuration = [
-  ["users", User.where(:id => [1])],      # specify a subset of users
-  ["blog_posts", User]                    # filter blog_posts by User
+  ["users", nil, User.where(:id => [1])],      # specify a subset of users
+  ["blog_posts", User]                         # filter blog_posts by User
 ]
 ```
 
