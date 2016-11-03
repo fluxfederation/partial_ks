@@ -13,7 +13,7 @@ class PartialKs::Runner
       generation.each do |table_name, filter_config, depth|
         table_names << table_name
 
-        if filter_config.present?
+        if !filter_config.nil?
           if filter_config.is_a?(ActiveRecord::Relation) || filter_config.respond_to?(:where_sql)
             only_filter = filter_config.where_sql.to_s.sub("WHERE", "")
           elsif filter_config.is_a?(String)
