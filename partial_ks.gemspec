@@ -13,6 +13,7 @@ EOF
   gem.author       = "Thong Kuah"
   gem.email        = "kuahyeow@gmail.com"
   gem.homepage     = "https://git.powershop.co.nz/partial_ks"
+  gem.license      = "MIT"
 
   gem.executables  = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files        = `git ls-files`.split("\n")
