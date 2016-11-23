@@ -2,49 +2,47 @@
 # goes through each table not already in the table graph,
 # and attempts to automatically populate the table into the table graph
 class PartialKs::ConfigurationGenerator
-  attr_reader :table_graph, :ignored_table_names
+  attr_reader :table_graph, :table_names
 
-  def initialize(table_graph, ignored_table_names: [])
+  def initialize(table_graph, table_names: nil)
     @table_graph = table_graph
-    @ignored_table_names = ignored_table_names
+    @table_names = table_names || ActiveRecord::Base.connection.tables
   end
 
   def call
-    @auto_constructed_table_graph ||= auto_construct_table_graph
+    @filtered_tables ||= filtered_tables
   end
 
   protected
   def all_tables
-    @all_tables ||= (ActiveRecord::Base.connection.tables - ignored_table_names).map {|table_name| PartialKs::Table.new(table_name) }.select(&:model?).index_by(&:table_name)
+    @all_tables ||= @table_names.map {|table_name| PartialKs::Table.new(table_name) }.select(&:model?).index_by(&:table_name)
   end
 
-  def auto_construct_table_graph
+  def filtered_tables
     synced_tables = {}
 
-    table_graph.each do |table_name, parent_table, table_graph|
+    table_graph.each do |table_name, specified_parent_model, filter_for_table|
       next unless all_tables[table_name]
 
-      synced_tables[table_name] = [table_name, parent_table, table_graph]
+      parent_model = specified_parent_model
+      synced_tables[table_name] = PartialKs::FilteredTable.new(all_tables[table_name], parent_model, custom_filter_relation: filter_for_table)
     end
 
     all_tables.each do |table_name, table|
       next if synced_tables[table_name]
-      next unless table.top_level_table?
 
-      synced_tables[table_name] = [table_name, nil]
+      begin
+        inferrer = PartialKs::ParentInferrer.new(table)
+        #TODO get rid of try!
+        parent_model = all_tables[inferrer.inferred_parent_table].try!(:model)
+        synced_tables[table_name] = PartialKs::FilteredTable.new(table, parent_model)
+      rescue PartialKs::ParentInferrer::CannotInfer
+        next
+      end
+
     end
 
-    all_tables.each do |table_name, table|
-      next if synced_tables[table_name]
-      next unless table.non_nullable_parent_tables.size == 1
-
-      parent_table_name, _, _ = synced_tables[table.non_nullable_parent_tables.only]
-      parent_table = all_tables[parent_table_name] if parent_table_name
-      next unless parent_table
-
-      synced_tables[table.table_name] = [table_name, parent_table.model]
-    end
-
+    # TODO remove this side effect. Maybe yield or a different method call ?
     puts "***************"
     remaining_size = 0
     all_tables.each do |table_name, table|
