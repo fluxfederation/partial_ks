@@ -42,9 +42,6 @@ class PartialKs::Runner
     result
   end
 
-  # Yields the following
-  # 1. table name
-  # 2. the foreign key columns used to filter this table, and a lambda that will return the foreign key ids
   def each_generation
     return enum_for(:each_generation) unless block_given?
 
