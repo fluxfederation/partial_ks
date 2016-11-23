@@ -55,7 +55,7 @@ class PartialKs::Runner
 
   protected
   def generations
-    return @generations if @generations
+    return @generations if defined?(@generations)
 
     @generations = []
     table_graphs.each do |table_graph|
