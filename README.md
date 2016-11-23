@@ -10,7 +10,7 @@ So how does it work ?
 
 ```
 manual_configuration = []
-config = PartialKs::ConfigurationGenerator.new().call
+config = PartialKs::ConfigurationGenerator.new(manual_configuration).call
 PartialKs::Runner.new([config]).run!
 ```
 
@@ -25,8 +25,8 @@ manual_configuration = [
 
 TODO :
 
-Rename PartialKs::ConfigurationGenerator#call to something better
-What in the world is the tuples in `manual_configuration` meant to be ?
-Minimize Public API
+* Rename PartialKs::ConfigurationGenerator#call to something better
+* What in the world is the tuples in `manual_configuration` meant to be ?
+* Minimize Public API
 
 
