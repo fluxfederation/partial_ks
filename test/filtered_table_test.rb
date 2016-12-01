@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe "filter condition" do
-  let(:table) { PartialKs::Table.new("users") }
+  let(:table) { PartialKs::Table.new(User) }
 
   it "uses parent as the filter" do
     parent = Tag

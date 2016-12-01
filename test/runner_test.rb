@@ -18,9 +18,9 @@ describe 'running based on output from generator' do
 
   let(:generator_output) do
     [
-      PartialKs::FilteredTable.new(PartialKs::Table.new("users"), nil, custom_filter_relation: User.where(:id => [1])),
-      PartialKs::FilteredTable.new(PartialKs::Table.new("tags"), nil),
-      PartialKs::FilteredTable.new(PartialKs::Table.new("blog_posts"), User),
+      PartialKs::FilteredTable.new(PartialKs::Table.new(User), nil, custom_filter_relation: User.where(:id => [1])),
+      PartialKs::FilteredTable.new(PartialKs::Table.new(Tag), nil),
+      PartialKs::FilteredTable.new(PartialKs::Table.new(BlogPost), User),
     ]
   end
 
