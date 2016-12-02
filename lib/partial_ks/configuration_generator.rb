@@ -2,10 +2,10 @@
 # goes through each table not already in the table graph,
 # and attempts to automatically populate the table into the table graph
 class PartialKs::ConfigurationGenerator
-  attr_reader :table_graph, :table_names
+  attr_reader :manual_configuration, :table_names
 
-  def initialize(table_graph, table_names: nil)
-    @table_graph = table_graph
+  def initialize(manual_configuration, table_names: nil)
+    @manual_configuration = manual_configuration
     @table_names = table_names || ActiveRecord::Base.connection.tables
   end
 
@@ -21,7 +21,7 @@ class PartialKs::ConfigurationGenerator
   def filtered_tables
     synced_tables = {}
 
-    table_graph.each do |table_name_or_model, specified_parent_model, filter_for_table|
+    manual_configuration.each do |table_name_or_model, specified_parent_model, filter_for_table|
       table_name = table_name_or_model.is_a?(String) ? table_name_or_model : table_name_or_model.table_name
       next unless all_tables[table_name]
 
