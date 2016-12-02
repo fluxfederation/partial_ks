@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.0.6 (planned)
+## 0.0.6
 
 Allow manual_configuration to transition to using model names (moving off from table names)
 
