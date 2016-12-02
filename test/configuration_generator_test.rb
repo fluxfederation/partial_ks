@@ -32,3 +32,27 @@ describe "generating dependencies" do
     ]
   end
 end
+
+describe "transition to model based dependencies" do
+  let(:manual_configuration) do
+    [
+      [User, nil, User.where(:id => [1])],
+    ]
+  end
+
+  it "auto infers single belongs-to dependencies" do
+    generator(manual_configuration, table_names: pks_tables("users", "blog_posts")).
+      must_equal [
+      ["users", nil, User.where(:id => [1])],
+      ["blog_posts", User, nil]
+    ]
+  end
+
+  it "auto infers top level tables" do
+    generator(manual_configuration, table_names: pks_tables("users", "tags")).
+      must_equal [
+      ["users", nil, User.where(:id => [1])],
+      ["tags", nil, nil]
+    ]
+  end
+end

@@ -21,7 +21,8 @@ class PartialKs::ConfigurationGenerator
   def filtered_tables
     synced_tables = {}
 
-    table_graph.each do |table_name, specified_parent_model, filter_for_table|
+    table_graph.each do |table_name_or_model, specified_parent_model, filter_for_table|
+      table_name = table_name_or_model.is_a?(String) ? table_name_or_model : table_name_or_model.table_name
       next unless all_tables[table_name]
 
       parent_model = specified_parent_model
