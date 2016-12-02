@@ -1,6 +1,6 @@
 require File.expand_path('../lib/partial_ks/version', __FILE__)
 
-spec = Gem::Specification.new do |gem|
+Gem::Specification.new do |gem|
   gem.name         = 'partial_ks'
   gem.version      = PartialKs::VERSION
   gem.summary      = "Partial KS"
