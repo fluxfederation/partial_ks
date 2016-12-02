@@ -3,7 +3,7 @@ require 'test_helper'
 describe "inferring parents" do
   it "infers no parent for a top level table" do
     table = PartialKs::Table.new("tags")
-    PartialKs::ParentInferrer.new(table).inferred_parent_table.must_equal nil
+    PartialKs::ParentInferrer.new(table).inferred_parent_table.must_be_nil
   end
 
   it "infers a parent for a table that has a single belongs_to" do
