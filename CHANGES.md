@@ -18,6 +18,9 @@ Remember, if you want to configure all models, you must eager load in developmen
 This has the implication that a table that wasn't considered top level could be
 top level.
 
+* Bugfix: Emit valid where SQL fragments for models which has a assocation with `:foreign_key`
+that does not follow convention
+
 ## 0.0.6
 
 Allow manual_configuration to transition to using model names (moving off from table names)

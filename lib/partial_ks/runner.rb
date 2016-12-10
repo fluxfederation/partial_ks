@@ -12,21 +12,10 @@ class PartialKs::Runner
 
       generation.each do |table|
         table_names << table.table_name
-        filter_config = table.filter_condition
+        filter_config = table.kitchen_sync_filter
 
         if !filter_config.nil?
-          if filter_config.is_a?(ActiveRecord::Relation) || filter_config.respond_to?(:where_sql)
-            only_filter = filter_config.where_sql.to_s.sub("WHERE", "")
-          elsif filter_config.is_a?(String)
-            only_filter = filter_config
-          else
-            # this only supports parents where it's a belongs_to
-            # TODO we can make it work with has_many
-            # e.g. SomeModel.reflect_on_association(:elses)
-            only_filter = "#{filter_config.to_s.foreign_key} IN (#{[0, *filter_config.pluck(:id)].join(',')})"
-          end
-
-          tables_to_filter[table.table_name] = {"only" => only_filter}
+          tables_to_filter[table.table_name] = filter_config
         end
       end
 
@@ -39,7 +28,7 @@ class PartialKs::Runner
     result = []
     each_generation.with_index do |generation, depth|
       generation.each do |table|
-        result << [table.table_name, table.parent_model, table.filter_condition, depth]
+        result << [table.table_name, table.parent_model, table.parent_model || table.custom_filter_relation, depth]
       end
     end
     result
