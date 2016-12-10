@@ -8,11 +8,9 @@ class PartialKs::FilteredTable
     @custom_filter_relation = custom_filter_relation
   end
 
-  def filter_condition
-    custom_filter_relation || parent_model
-  end
-
   def kitchen_sync_filter
+    filter_condition = custom_filter_relation || parent_model
+
     if !filter_condition.nil?
       if filter_condition.is_a?(ActiveRecord::Relation) || filter_condition.respond_to?(:where_sql)
         only_filter = filter_condition.where_sql.to_s.sub("WHERE", "")

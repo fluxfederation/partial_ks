@@ -28,7 +28,7 @@ class PartialKs::Runner
     result = []
     each_generation.with_index do |generation, depth|
       generation.each do |table|
-        result << [table.table_name, table.parent_model, table.filter_condition, depth]
+        result << [table.table_name, table.parent_model, table.parent_model || table.custom_filter_relation, depth]
       end
     end
     result
