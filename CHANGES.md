@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.1.0 (Planned)
+# 0.1.0
 
 * Switch to using Rails models rather than table names.
 
