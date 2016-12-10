@@ -45,7 +45,7 @@ describe 'running based on output from generator' do
   end
 
   it "yields all non-null filters" do
-    expected_filters     = generator_output.each_with_object({}) {|ft, hash| hash[ft.table_name] = ft.filter_condition if ft.filter_condition}
+    expected_filters     = generator_output.each_with_object({}) {|ft, hash| hash[ft.table_name] = ft.kitchen_sync_filter if ft.kitchen_sync_filter}
     actual_filters       = {}
 
     runner.run! do |tables_to_filter, table_names|
@@ -55,7 +55,7 @@ describe 'running based on output from generator' do
     actual_filters.size.must_equal expected_filters.size
     actual_filters.keys.must_equal expected_filters.keys
     expected_filters.each do |table_name, filter_condition|
-      actual_filters[table_name]["only"].must_be_kind_of String    # TODO test different kinds of filters.
+      actual_filters[table_name]["only"].must_be_kind_of String
     end
   end
 end
