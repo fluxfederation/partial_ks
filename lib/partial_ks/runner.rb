@@ -20,6 +20,9 @@ class PartialKs::Runner
           elsif filter_config.is_a?(String)
             only_filter = filter_config
           else
+            # this only supports parents where it's a belongs_to
+            # TODO we can make it work with has_many
+            # e.g. SomeModel.reflect_on_association(:elses)
             only_filter = "#{filter_config.to_s.foreign_key} IN (#{[0, *filter_config.pluck(:id)].join(',')})"
           end
 
