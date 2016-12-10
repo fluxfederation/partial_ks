@@ -12,3 +12,7 @@ class PostTag < ActiveRecord::Base
   belongs_to :blog_post
   belongs_to :tag
 end
+
+class OldEntry < ActiveRecord::Base
+  self.table_name = "cms_table"
+end

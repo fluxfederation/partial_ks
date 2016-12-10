@@ -3,11 +3,11 @@
 # and attempts to automatically populate the table into the table graph
 module PartialKs
   class ConfigurationGenerator
-    attr_reader :manual_configuration, :table_names
+    attr_reader :manual_configuration, :models
 
-    def initialize(manual_configuration, table_names: nil)
+    def initialize(manual_configuration, models: nil)
       @manual_configuration = manual_configuration
-      @table_names = table_names || ActiveRecord::Base.connection.tables
+      @models = models || PartialKs.all_rails_models
     end
 
     def call
@@ -16,14 +16,14 @@ module PartialKs
 
     protected
     def all_tables
-      @all_tables ||= @table_names.map {|table_name| PartialKs::Table.new(table_name) }.select(&:model?).index_by(&:table_name)
+      @all_tables ||= models.map {|model| PartialKs::Table.new(model) }.select(&:model?).index_by(&:table_name)
     end
 
     def filtered_tables
       synced_tables = {}
 
-      manual_configuration.each do |table_name_or_model, specified_parent_model, filter_for_table|
-        table_name = table_name_or_model.is_a?(String) ? table_name_or_model : table_name_or_model.table_name
+      manual_configuration.each do |model, specified_parent_model, filter_for_table|
+        table_name = model.table_name
         next unless all_tables[table_name]
 
         parent_model = specified_parent_model
@@ -35,8 +35,7 @@ module PartialKs
 
         begin
           inferrer = PartialKs::ParentInferrer.new(table)
-          #TODO get rid of try!
-          parent_model = all_tables[inferrer.inferred_parent_table].try!(:model)
+          parent_model = inferrer.inferred_parent_class
           synced_tables[table_name] = PartialKs::FilteredTable.new(table, parent_model)
         rescue PartialKs::ParentInferrer::CannotInfer
           next

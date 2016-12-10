@@ -20,4 +20,9 @@ ActiveRecord::Schema.define(:version => 0) do
     t.references :tag, null: false
     t.timestamps null: false
   end
+
+  create_table :cms_table, :force => true do |t|
+    t.string :cms_id
+    t.string :some_legacy_thing
+  end
 end

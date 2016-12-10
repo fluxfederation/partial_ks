@@ -1,15 +1,10 @@
 module PartialKs
   class Table
-    attr_reader :table_name
+    attr_reader :model
+    delegate :table_name, :to => :model
 
-    def initialize(table_name)
-      @table_name = table_name
-    end
-
-    def model
-      @model ||= table_name.classify.constantize
-    rescue NameError
-      nil
+    def initialize(model)
+      @model = model
     end
 
     # sometimes the table is present, but the model is not defined
@@ -19,15 +14,17 @@ module PartialKs
     end
 
     def top_level_table?
-      non_nullable_reflections.empty?
+      candidate_parent_classes.empty?
     end
 
-    def non_nullable_parent_tables
-      non_nullable_reflections.map(&:plural_name)
+    # NB: can't do polymorphic for now, rails errors on reflection#klass
+    # see, e.g. https://github.com/rails/rails/issues/15833
+    def candidate_parent_classes
+      non_nullable_reflections.reject(&:polymorphic?).map(&:klass)
     end
 
     def parent_tables
-      belongs_to_reflections.map(&:plural_name)
+      belongs_to_reflections.map(&:table_name)
     end
 
     private
