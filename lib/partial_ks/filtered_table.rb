@@ -20,7 +20,10 @@ class PartialKs::FilteredTable
         # this only supports parents where it's a belongs_to
         # TODO we can make it work with has_many
         # e.g. SomeModel.reflect_on_association(:elses)
-        only_filter = "#{filter_condition.to_s.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
+        association = table.model.reflect_on_all_associations(:belongs_to).find {|assoc| assoc.class_name == filter_condition.name}
+        raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
+
+        only_filter = "#{association.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
       end
 
       {"only" => only_filter}

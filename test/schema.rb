@@ -25,4 +25,9 @@ ActiveRecord::Schema.define(:version => 0) do
     t.string :cms_id
     t.string :some_legacy_thing
   end
+
+  create_table :old_tags, :force => true do |t|
+    t.integer :blog_post_id
+    t.timestamps null: false
+  end
 end

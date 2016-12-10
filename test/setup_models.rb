@@ -16,3 +16,7 @@ end
 class OldEntry < ActiveRecord::Base
   self.table_name = "cms_table"
 end
+
+class OldTag < ActiveRecord::Base
+  belongs_to :old_entry, :foreign_key => 'blog_post_id'
+end
