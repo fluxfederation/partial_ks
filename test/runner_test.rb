@@ -30,7 +30,7 @@ describe 'running based on output from generator' do
     runner.report.must_equal [
       ["users", nil, User.where(:id => [1]), 0],
       ["tags", nil, nil, 0],
-      ["blog_posts", User, User, 1],
+      ["blog_posts", User, nil, 1],
     ]
   end
 
