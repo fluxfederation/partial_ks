@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.1.1
+
+Fix minor regression with Runner#report
+
 # 0.1.0
 
 * Switch to using Rails models rather than table names.
