@@ -47,11 +47,11 @@ class PartialKs::Runner
     return @generations if defined?(@generations)
 
     @generations = []
-    table_graphs.each do |table_graph|
+    table_graphs.each do |filtered_tables|
       q = []
 
-      table_graph.each do |table|
-        q << table if table.parent_model.nil?
+      filtered_tables.each do |filtered_table|
+        q << filtered_table if filtered_table.parent_model.nil?
       end
 
       until q.empty?
@@ -59,7 +59,7 @@ class PartialKs::Runner
 
         next_generation = []
         q.each do |table|
-          table_graph.each do |child_table|
+          filtered_tables.each do |child_table|
             next_generation << child_table if child_table.parent_model && child_table.parent_model.table_name == table.table_name
           end
         end
