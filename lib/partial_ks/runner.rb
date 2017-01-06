@@ -42,9 +42,43 @@ module PartialKs
       end
     end
 
+    def tree
+      root = PartialKs::Tree.new(nil)
+
+      table_graphs.each do |filtered_tables|
+        index = filtered_tables.group_by {|table| table.parent_model.try(:table_name) }
+
+        index[nil].each do |table|
+          root.add(table)
+        end
+
+        root.children.each do |child|
+          add_nodes(index, child)
+        end
+      end
+
+      root
+    end
+
     protected
     def filtered_tables
       @filtered_tables ||= models_list.map {|model, parent, custom_filter| PartialKs::FilteredTable.new(model, parent, custom_filter_relation: custom_filter)}
+    end
+
+    def add_nodes(index, current_node)
+      child_items = index[current_node.item.table_name]
+      puts current_node.item.table_name
+      puts child_items.size.to_s if child_items
+      puts "0" unless child_items
+      return unless child_items
+
+      child_items.each do |item|
+        current_node.add(item)
+      end
+
+      current_node.children.each do |child_node|
+        add_nodes(index, child_node)
+      end
     end
 
     def generations
