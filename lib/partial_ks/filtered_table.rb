@@ -10,30 +10,38 @@ module PartialKs
     end
 
     def kitchen_sync_filter
-      filter_condition = custom_filter_relation || parent_model
-
-      if !filter_condition.nil?
-        if filter_condition.is_a?(ActiveRecord::Relation) || filter_condition.respond_to?(:where_sql)
-          only_filter = filter_condition.where_sql.to_s.sub("WHERE", "")
-        elsif filter_condition.is_a?(String)
-          only_filter = filter_condition
-        else
-          # TODO abstract this away into PartialKs::Table
-          association = table.model.reflect_on_all_associations.find {|assoc| assoc.class_name == filter_condition.name}
-          raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
-
-          only_filter = case association.macro
-            when :belongs_to
-              "#{association.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
-            when :has_many
-              "#{table.model.primary_key} IN (#{[0, *filter_condition.pluck(association.foreign_key)].join(',')})"
-            else
-              raise "Unknown macro"
-            end
-        end
-
-        {"only" => only_filter}
+      if custom_filter_relation
+        {"only" => filter_based_on_custom_filter_relation}
+      elsif parent_model
+        {"only" => filter_based_on_parent_model}
+      else
+        nil
       end
     end
+
+    protected
+    def filter_based_on_parent_model
+      # TODO abstract this away into PartialKs::Table
+      association = table.model.reflect_on_all_associations.find {|assoc| assoc.class_name == parent_model.name}
+      raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
+
+      case association.macro
+      when :belongs_to
+        "#{association.foreign_key} IN (#{[0, *parent_model.pluck(:id)].join(',')})"
+      when :has_many
+        "#{table.model.primary_key} IN (#{[0, *parent_model.pluck(association.foreign_key)].join(',')})"
+      else
+        raise "Unknown macro"
+      end
+    end
+
+    def filter_based_on_custom_filter_relation
+      if custom_filter_relation.is_a?(ActiveRecord::Relation) || custom_filter_relation.respond_to?(:where_sql)
+        only_filter = custom_filter_relation.where_sql.to_s.sub("WHERE", "")
+      elsif custom_filter_relation.is_a?(String)
+        only_filter = custom_filter_relation
+      end
+    end
+
   end
 end
