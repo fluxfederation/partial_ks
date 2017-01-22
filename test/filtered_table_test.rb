@@ -20,6 +20,18 @@ describe "kitchen sync filter" do
     filtered_table.kitchen_sync_filter.must_be_nil
   end
 
+  describe "via has_many association" do
+    let(:post_tag_id) { 111 }
+
+    it "can filter" do
+      table = PartialKs::Table.new(BlogPost)
+      filtered_table = PartialKs::FilteredTable.new(table, PostTag)
+      PostTag.stub :pluck, [post_tag_id] do    # TODO verify the pluck
+        filtered_table.kitchen_sync_filter.must_equal({"only" => "id IN (0,#{post_tag_id})"})
+      end
+    end
+  end
+
   describe "table with different :foreign_key" do
     let(:table) { PartialKs::Table.new(OldTag) }
 

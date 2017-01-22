@@ -1,11 +1,14 @@
 class User < ActiveRecord::Base
+  has_many :blog_posts
 end
 
 class BlogPost < ActiveRecord::Base
   belongs_to :user
+  has_many :post_tags
 end
 
 class Tag < ActiveRecord::Base
+  has_many :post_tags
 end
 
 class PostTag < ActiveRecord::Base

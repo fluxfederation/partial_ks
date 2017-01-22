@@ -18,13 +18,18 @@ module PartialKs
         elsif filter_condition.is_a?(String)
           only_filter = filter_condition
         else
-          # this only supports parents where it's a belongs_to
-          # TODO we can make it work with has_many
-          # e.g. SomeModel.reflect_on_association(:elses)
-          association = table.model.reflect_on_all_associations(:belongs_to).find {|assoc| assoc.class_name == filter_condition.name}
+          # TODO abstract this away into PartialKs::Table
+          association = table.model.reflect_on_all_associations.find {|assoc| assoc.class_name == filter_condition.name}
           raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
 
-          only_filter = "#{association.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
+          only_filter = case association.macro
+            when :belongs_to
+              "#{association.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
+            when :has_many
+              "#{table.model.primary_key} IN (#{[0, *filter_condition.pluck(association.foreign_key)].join(',')})"
+            else
+              raise "Unknown macro"
+            end
         end
 
         {"only" => only_filter}
