@@ -21,18 +21,7 @@ module PartialKs
 
     protected
     def filter_based_on_parent_model
-      # TODO abstract this away into PartialKs::Table
-      association = table.model.reflect_on_all_associations.find {|assoc| assoc.class_name == parent_model.name}
-      raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
-
-      case association.macro
-      when :belongs_to
-        "#{association.foreign_key} IN (#{[0, *parent_model.pluck(:id)].join(',')})"
-      when :has_many
-        "#{table.model.primary_key} IN (#{[0, *parent_model.pluck(association.foreign_key)].join(',')})"
-      else
-        raise "Unknown macro"
-      end
+      table.relation_for_associated_model(parent_model).where_sql.to_s.sub("WHERE", "")
     end
 
     def filter_based_on_custom_filter_relation
