@@ -21,16 +21,19 @@ module PartialKs
 
     protected
     def filter_based_on_parent_model
-      table.relation_for_associated_model(parent_model).where_sql.to_s.sub("WHERE", "")
+      table.relation_for_associated_model(parent_model).where_sql.to_s.sub(where_regexp, "")
     end
 
     def filter_based_on_custom_filter_relation
       if custom_filter_relation.is_a?(ActiveRecord::Relation) || custom_filter_relation.respond_to?(:where_sql)
-        only_filter = custom_filter_relation.where_sql.to_s.sub("WHERE", "")
+        only_filter = custom_filter_relation.where_sql.to_s.sub(where_regexp, "")
       elsif custom_filter_relation.is_a?(String)
-        only_filter = custom_filter_relation
+        only_filter = custom_filter_relation.sub(where_regexp, "")
       end
     end
 
+    def where_regexp
+      /\A.*WHERE\s*/i
+    end
   end
 end
