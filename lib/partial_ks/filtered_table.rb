@@ -26,9 +26,9 @@ module PartialKs
 
     def filter_based_on_custom_filter_relation
       if custom_filter_relation.is_a?(ActiveRecord::Relation) || custom_filter_relation.respond_to?(:where_sql)
-        only_filter = custom_filter_relation.where_sql.to_s.sub(where_regexp, "")
+        custom_filter_relation.where_sql.to_s.sub(where_regexp, "")
       elsif custom_filter_relation.is_a?(String)
-        only_filter = custom_filter_relation.sub(where_regexp, "")
+        custom_filter_relation.sub(where_regexp, "")
       end
     end
 
