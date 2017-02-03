@@ -1,6 +1,6 @@
 # Changelog
 
-# NEXT
+# 0.2.0
 
 * Support filtering via a has_many association
 
