@@ -1,5 +1,28 @@
 # Changelog
 
+# NEXT
+
+* Support filtering via a has_many association
+
+You can now skip manually specifying the resultant filter on a has_many "parent". So previously:
+
+```
+[
+  [User, Tags, User.where(:id => Tags.pluck(:id))]
+]
+```
+
+can now just be :
+
+```
+[
+  [User, Tags]
+]
+```
+
+* Can now specify a full SQL statement in the manual specification
+
+
 # 0.1.1
 
 Fix minor regression with Runner#report

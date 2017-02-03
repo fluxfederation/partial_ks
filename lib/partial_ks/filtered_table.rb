@@ -10,25 +10,30 @@ module PartialKs
     end
 
     def kitchen_sync_filter
-      filter_condition = custom_filter_relation || parent_model
-
-      if !filter_condition.nil?
-        if filter_condition.is_a?(ActiveRecord::Relation) || filter_condition.respond_to?(:where_sql)
-          only_filter = filter_condition.where_sql.to_s.sub("WHERE", "")
-        elsif filter_condition.is_a?(String)
-          only_filter = filter_condition
-        else
-          # this only supports parents where it's a belongs_to
-          # TODO we can make it work with has_many
-          # e.g. SomeModel.reflect_on_association(:elses)
-          association = table.model.reflect_on_all_associations(:belongs_to).find {|assoc| assoc.class_name == filter_condition.name}
-          raise "#{filter_condition.name} not found in #{table.model.name} associations" if association.nil?
-
-          only_filter = "#{association.foreign_key} IN (#{[0, *filter_condition.pluck(:id)].join(',')})"
-        end
-
-        {"only" => only_filter}
+      if custom_filter_relation
+        {"only" => filter_based_on_custom_filter_relation}
+      elsif parent_model
+        {"only" => filter_based_on_parent_model}
+      else
+        nil
       end
+    end
+
+    protected
+    def filter_based_on_parent_model
+      table.relation_for_associated_model(parent_model).where_sql.to_s.sub(where_regexp, "")
+    end
+
+    def filter_based_on_custom_filter_relation
+      if custom_filter_relation.is_a?(ActiveRecord::Relation) || custom_filter_relation.respond_to?(:where_sql)
+        only_filter = custom_filter_relation.where_sql.to_s.sub(where_regexp, "")
+      elsif custom_filter_relation.is_a?(String)
+        only_filter = custom_filter_relation.sub(where_regexp, "")
+      end
+    end
+
+    def where_regexp
+      /\A.*WHERE\s*/i
     end
   end
 end

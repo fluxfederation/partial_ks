@@ -27,6 +27,20 @@ module PartialKs
       belongs_to_reflections.map(&:table_name)
     end
 
+    def relation_for_associated_model(klass)
+      association = model.reflect_on_all_associations.find {|assoc| assoc.class_name == klass.name}
+      raise "#{filter_condition.name} not found in #{model.name} associations" if association.nil?
+
+      case association.macro
+      when :belongs_to
+        model.where(association.foreign_key => [0, *klass.pluck(:id)])
+      when :has_many
+        model.where(model.primary_key => [0, *klass.pluck(association.foreign_key)])
+      else
+        raise "Unknown macro"
+      end
+    end
+
     private
     def belongs_to_reflections
       @belongs_to_reflections ||= model.reflect_on_all_associations(:belongs_to)
