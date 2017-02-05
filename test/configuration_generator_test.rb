@@ -1,10 +1,5 @@
 require 'test_helper'
 
-def generator(manual, tables)
-  PartialKs::ConfigurationGenerator.new(manual, tables).call.
-    map {|f| [f.table_name, f.parent_model, f.custom_filter_relation] }
-end
-
 describe "generating dependencies" do
   let(:manual_configuration) do
     [
@@ -12,39 +7,13 @@ describe "generating dependencies" do
     ]
   end
 
-  # TODO remove redundant test (cf parent_inferrer_test)
-  it "auto infers single belongs-to dependencies" do
-    generator(manual_configuration, models: [User, BlogPost]).
-      must_equal [
-      ["users", nil, User.where(:id => [1])],
-      ["blog_posts", User, nil]
-    ]
+  it "returns the manual_configuration" do
+    result = PartialKs::ConfigurationGenerator.new(manual_configuration).all
+    result.must_include manual_configuration.first
   end
 
-  # TODO remove redundant test (cf parent_inferrer_test)
-  it "auto infers top level tables" do
-    generator(manual_configuration, models: [User, Tag]).
-      must_equal [
-      ["users", nil, User.where(:id => [1])],
-      ["tags", nil, nil]
-    ]
-  end
-
-  it "can return models with different table_name" do
-    model = OldEntry
-    model.table_name.wont_equal model.name.tableize
-
-    generator(manual_configuration, models: [User, model]).
-      must_equal [
-      ["users", nil, User.where(:id => [1])],
-      ["cms_table", nil, nil]
-    ]
-  end
-
-  it "does not choke on a table which has had its migration run" do
-    generator(manual_configuration, models: [User, NewModel]).
-      must_equal [
-      ["users", nil, User.where(:id => [1])],
-    ]
+  it "processes all models" do
+    result = PartialKs::ConfigurationGenerator.new(manual_configuration).all
+    result.size.must_equal PartialKs.all_rails_models.size
   end
 end

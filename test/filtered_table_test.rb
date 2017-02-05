@@ -1,7 +1,7 @@
 require 'test_helper'
 
 describe "kitchen sync filter" do
-  let(:table) { PartialKs::Table.new(PostTag) }
+  let(:model) { PostTag }
   let(:parent) { Minitest::Mock.new }
 
   it "proxies to Table if there's parent only" do
@@ -9,39 +9,39 @@ describe "kitchen sync filter" do
     relation_mock = Minitest::Mock.new
     relation_mock.expect :where_sql, "WHERE tag_id IN (0)"
 
-    filtered_table = PartialKs::FilteredTable.new(table, parent)
-    table.stub table_parent_relation_method, relation_mock do
+    filtered_table = PartialKs::FilteredTable.new(model, parent)
+    filtered_table.table.stub table_parent_relation_method, relation_mock do
       filtered_table.kitchen_sync_filter.must_equal({"only" => 'tag_id IN (0)'})
     end
   end
 
   it "uses the custom filter if provided" do
     filter = PostTag.where(:id => [1, 2])
-    filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: filter)
+    filtered_table = PartialKs::FilteredTable.new(model, nil, custom_filter_relation: filter)
     filtered_table.kitchen_sync_filter.must_equal({"only" => '"post_tags"."id" IN (1, 2)'})
   end
 
   it "uses the filter inside a lambda" do
     filter = -> { PostTag.where(:id => [1, 2]) }
-    filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: filter)
+    filtered_table = PartialKs::FilteredTable.new(model, nil, custom_filter_relation: filter)
     filtered_table.kitchen_sync_filter.must_equal({"only" => '"post_tags"."id" IN (1, 2)'})
   end
 
   it "uses a SQL where fragment as a filter if provided" do
     string_filter = "1=0"
-    filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: string_filter)
+    filtered_table = PartialKs::FilteredTable.new(model, nil, custom_filter_relation: string_filter)
     filtered_table.kitchen_sync_filter.must_equal({"only" => string_filter})
   end
 
   it "uses a SQL statement as a filter if provided" do
     string_filter = "1=0"
-    sql_statement = "select * from #{table.table_name} where #{string_filter}"
-    filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: sql_statement)
+    sql_statement = "select * from #{model.table_name} where #{string_filter}"
+    filtered_table = PartialKs::FilteredTable.new(model, nil, custom_filter_relation: sql_statement)
     filtered_table.kitchen_sync_filter.must_equal({"only" => string_filter})
   end
 
   it "returns nil if parent is nil" do
-    filtered_table = PartialKs::FilteredTable.new(table, nil)
+    filtered_table = PartialKs::FilteredTable.new(model, nil)
     filtered_table.kitchen_sync_filter.must_be_nil
   end
 

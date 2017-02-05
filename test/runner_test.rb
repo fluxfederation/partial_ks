@@ -2,29 +2,29 @@ require 'test_helper'
 
 describe 'end to end testing' do
   it "runs without error" do
-    generator_output = PartialKs::ConfigurationGenerator.new([]).call
-    PartialKs::Runner.new([generator_output]).run! do |tables_to_filter, table_names|
-      # left empty
+    count = 0
+    multi_parents = [PostTag]
+
+    generator_output = PartialKs::ConfigurationGenerator.new([]).all
+    PartialKs::Runner.new(generator_output).run! do |tables_to_filter, table_names|
+      count += table_names.size
     end
+
+    count.must_equal PartialKs.all_rails_models.size - multi_parents.size
   end
 end
 
 describe 'running based on output from generator' do
-  let(:manual_configuration) do
-    [
-      ["users", nil, User.where(:id => [1])],
-    ]
-  end
-
   let(:generator_output) do
     [
-      PartialKs::FilteredTable.new(PartialKs::Table.new(User), nil, custom_filter_relation: User.where(:id => [1])),
-      PartialKs::FilteredTable.new(PartialKs::Table.new(Tag), nil),
-      PartialKs::FilteredTable.new(PartialKs::Table.new(BlogPost), User),
+      [User, nil, User.where(:id => [1])],
+      [Tag, nil],
+      [BlogPost, User],
+      [PostTag, PartialKs::MultiParent.new([BlogPost, Tag])],
     ]
   end
 
-  let(:runner) { PartialKs::Runner.new([generator_output]) }
+  let(:runner) { PartialKs::Runner.new(generator_output) }
 
   it "reports everything" do
     runner.report.must_equal [

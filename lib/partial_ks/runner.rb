@@ -1,9 +1,9 @@
 module PartialKs
   class Runner
-    attr_reader :table_graphs
+    attr_reader :models_list
 
-    def initialize(table_graphs)
-      @table_graphs = table_graphs
+    def initialize(models_list)
+      @models_list = models_list
     end
 
     def run!
@@ -44,29 +44,31 @@ module PartialKs
     end
 
     protected
+    def filtered_tables
+      @filtered_tables ||= models_list.map {|model, parent, custom_filter| PartialKs::FilteredTable.new(model, parent, custom_filter_relation: custom_filter)}
+    end
+
     def generations
       return @generations if defined?(@generations)
 
       @generations = []
-      table_graphs.each do |filtered_tables|
-        q = []
+      q = []
 
-        filtered_tables.each do |filtered_table|
-          q << filtered_table if filtered_table.parent_model.nil?
-        end
+      filtered_tables.each do |filtered_table|
+        q << filtered_table if filtered_table.parent_model.nil?
+      end
 
-        until q.empty?
-          @generations << q
+      until q.empty?
+        @generations << q
 
-          next_generation = []
-          q.each do |table|
-            filtered_tables.each do |child_table|
-              next_generation << child_table if child_table.parent_model && child_table.parent_model.table_name == table.table_name
-            end
+        next_generation = []
+        q.each do |table|
+          filtered_tables.each do |child_table|
+            next_generation << child_table if child_table.parent_model && child_table.parent_model.table_name == table.table_name
           end
-
-          q = next_generation
         end
+
+        q = next_generation
       end
 
       @generations
