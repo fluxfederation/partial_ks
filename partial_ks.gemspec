@@ -18,5 +18,7 @@ EOF
   gem.test_files   = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.require_path = "lib"
 
-  gem.add_dependency "activerecord"
+  gem.add_dependency "activerecord", ">= 4.2.0"
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency "sqlite3"
 end
