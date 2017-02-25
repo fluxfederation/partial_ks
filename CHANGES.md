@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.3.0
+
+No functionality changes but specify restrictions already observed in gemspec
+
 # 0.2.0
 
 * Support filtering via a has_many association
