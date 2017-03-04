@@ -35,7 +35,7 @@ describe 'running based on output from generator' do
   end
 
   it "yields all table names" do
-    expected_table_names = generator_output.map(&:table_name)
+    expected_table_names = [User, Tag, BlogPost].map(&:table_name)
     actual_table_names   = []
     runner.run! do |tables_to_filter, table_names|
       actual_table_names += table_names
@@ -45,7 +45,7 @@ describe 'running based on output from generator' do
   end
 
   it "yields all non-null filters" do
-    expected_filters     = generator_output.each_with_object({}) {|ft, hash| hash[ft.table_name] = ft.kitchen_sync_filter if ft.kitchen_sync_filter}
+    expected_filters     = [User, BlogPost].map(&:table_name)
     actual_filters       = {}
 
     runner.run! do |tables_to_filter, table_names|
@@ -53,8 +53,8 @@ describe 'running based on output from generator' do
     end
 
     actual_filters.size.must_equal expected_filters.size
-    actual_filters.keys.must_equal expected_filters.keys
-    expected_filters.each do |table_name, filter_condition|
+    actual_filters.keys.must_equal expected_filters
+    expected_filters.each do |table_name|
       actual_filters[table_name]["only"].must_be_kind_of String
     end
   end
