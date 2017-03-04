@@ -9,7 +9,7 @@ To install and run tests :
 
 ```
 rm Gemfile.lock
-ACTIVERECORD_VERSION="~4.2.8" bundle
+ACTIVERECORD_VERSION="~> 4.2.8" bundle
 bundle exec rake
 ```
 
