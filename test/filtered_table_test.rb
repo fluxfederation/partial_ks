@@ -21,6 +21,12 @@ describe "kitchen sync filter" do
     filtered_table.kitchen_sync_filter.must_equal({"only" => '"post_tags"."id" IN (1, 2)'})
   end
 
+  it "uses the filter inside a lambda" do
+    filter = -> { PostTag.where(:id => [1, 2]) }
+    filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: filter)
+    filtered_table.kitchen_sync_filter.must_equal({"only" => '"post_tags"."id" IN (1, 2)'})
+  end
+
   it "uses a SQL where fragment as a filter if provided" do
     string_filter = "1=0"
     filtered_table = PartialKs::FilteredTable.new(table, nil, custom_filter_relation: string_filter)
