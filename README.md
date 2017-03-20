@@ -20,7 +20,7 @@ You can specify manual configurations if needed.
 
 ```
 manual_configuration = [
-  [User, nil, User.where(:id => [1])],     # specify a subset of users. as users have no parent, specify `nil`
+  [User, nil, -> { User.where(:id => [1]) }],     # specify a subset of users. as users have no parent, specify `nil`
   [BlogPost, User]                         # filter blog_posts by User
 ]
 ```

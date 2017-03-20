@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.0
+
+Allow lambdas to be used as a custom filter
+
 # 0.3.0
 
 No functionality changes but specify restrictions already observed in gemspec
