@@ -25,10 +25,12 @@ module PartialKs
     end
 
     def filter_based_on_custom_filter_relation
-      if custom_filter_relation.is_a?(ActiveRecord::Relation) || custom_filter_relation.respond_to?(:where_sql)
-        custom_filter_relation.where_sql.to_s.sub(where_regexp, "")
-      elsif custom_filter_relation.is_a?(String)
-        custom_filter_relation.sub(where_regexp, "")
+      relation = custom_filter_relation.respond_to?(:call) ? custom_filter_relation.call : custom_filter_relation
+
+      if relation.is_a?(ActiveRecord::Relation) || relation.respond_to?(:where_sql)
+        relation.where_sql.to_s.sub(where_regexp, "")
+      elsif relation.is_a?(String)
+        relation.sub(where_regexp, "")
       end
     end
 
