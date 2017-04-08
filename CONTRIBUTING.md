@@ -2,7 +2,7 @@ This document should tell all you need to know for contributing to this project.
 
 # Testing
 
-Tested with activerecord 4.2.7.1, 4.2.8 and 5.0.1 (on Ruby 2.3.3)
+Tested with activerecord 4.2.7.1, 4.2.8 and 5.0.2 (on Ruby 2.3.3)
 
 
 To install and run tests :

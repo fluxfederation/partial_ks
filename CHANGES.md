@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.1
+
+Fix issue where models which are missing their table would error out the whole process.
+
 # 0.4.0
 
 Allow lambdas to be used as a custom filter
