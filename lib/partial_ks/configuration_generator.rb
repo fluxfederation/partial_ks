@@ -3,7 +3,7 @@
 # and attempts to automatically populate the table into the table graph
 module PartialKs
   class ConfigurationGenerator
-    attr_reader :manual_configuration, :models
+    attr_reader :manual_configuration
 
     def initialize(manual_configuration, models: nil)
       @manual_configuration = manual_configuration
@@ -17,6 +17,11 @@ module PartialKs
     protected
     def all_tables
       @all_tables ||= models.map {|model| PartialKs::Table.new(model) }.select(&:model?).index_by(&:table_name)
+    end
+
+    def models
+      tables_in_database = ActiveRecord::Base.connection.tables
+      @models.select{|model| tables_in_database.include?(model.table_name)}
     end
 
     def filtered_tables

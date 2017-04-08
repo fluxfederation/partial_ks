@@ -38,4 +38,11 @@ describe "generating dependencies" do
       ["cms_table", nil, nil]
     ]
   end
+
+  it "does not choke on a table which has had its migration run" do
+    generator(manual_configuration, models: [User, NewModel]).
+      must_equal [
+      ["users", nil, User.where(:id => [1])],
+    ]
+  end
 end
