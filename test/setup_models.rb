@@ -23,3 +23,8 @@ end
 class OldTag < ActiveRecord::Base
   belongs_to :old_entry, :foreign_key => 'blog_post_id'
 end
+
+class NewModel < ActiveRecord::Base
+  # no tables, e.g. migration not run yet
+  belongs_to :user
+end
