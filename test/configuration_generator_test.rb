@@ -12,6 +12,7 @@ describe "generating dependencies" do
     ]
   end
 
+  # TODO remove redundant test (cf parent_inferrer_test)
   it "auto infers single belongs-to dependencies" do
     generator(manual_configuration, models: [User, BlogPost]).
       must_equal [
@@ -20,6 +21,7 @@ describe "generating dependencies" do
     ]
   end
 
+  # TODO remove redundant test (cf parent_inferrer_test)
   it "auto infers top level tables" do
     generator(manual_configuration, models: [User, Tag]).
       must_equal [
@@ -28,7 +30,7 @@ describe "generating dependencies" do
     ]
   end
 
-  it "can infer models with different table_name" do
+  it "can return models with different table_name" do
     model = OldEntry
     model.table_name.wont_equal model.name.tableize
 
