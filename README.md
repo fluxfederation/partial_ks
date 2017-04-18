@@ -8,9 +8,7 @@ So how does it work ?
 
 
 ```
-manual_configuration = []
-config = PartialKs::ConfigurationGenerator.new(manual_configuration).all
-PartialKs::Runner.new([config]).run! do |tables_to_filter, tables|
+PartialKs::KitchenSync.new(manual_configuration).run! do |tables_to_filter, tables|
   puts tables_to_filter.inspect
   puts tables.inspect
 end
