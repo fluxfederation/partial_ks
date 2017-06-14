@@ -4,6 +4,12 @@ module PartialKs
       ::Rails.application.eager_load!
       ::Rails::Engine.subclasses.map(&:eager_load!)
     end
-    ActiveRecord::Base.direct_descendants
+
+    concrete_classes.map(&:base_class).uniq
+  end
+
+  private
+  def self.concrete_classes
+    ActiveRecord::Base.descendants.reject {|klass| klass.abstract_class? || !klass.table_exists?}
   end
 end
