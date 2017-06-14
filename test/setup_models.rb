@@ -1,4 +1,8 @@
-class User < ActiveRecord::Base
+class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
+end
+
+class User < ApplicationRecord
   has_many :blog_posts
 end
 
@@ -27,4 +31,7 @@ end
 class NewModel < ActiveRecord::Base
   # no tables, e.g. migration not run yet
   belongs_to :user
+end
+
+class SubTag < Tag
 end
