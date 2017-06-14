@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.4.2
+
+Fix an issue where we did not support the new ApplicationRecord convention
+
 # 0.4.1
 
 Fix issue where models which are missing their table would error out the whole process.
