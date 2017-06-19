@@ -20,7 +20,6 @@ module PartialKs
           end
         end
 
-        # TODO output only tables_to_filter, depending on how KS handles filters
         yield tables_to_filter, table_names
       end
     end

@@ -1,6 +1,5 @@
 module PartialKs
-  # TODO ModelList ?
-  class ConfigurationGenerator
+  class ModelsList
     attr_reader :manual_configuration
 
     def initialize(manual_configuration)

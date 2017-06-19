@@ -52,7 +52,6 @@ module PartialKs
     end
   end
 
-  # TODO confirm this is what we want
   class MultiParent
     attr_reader :parents
 

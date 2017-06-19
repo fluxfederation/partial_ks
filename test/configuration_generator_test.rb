@@ -8,12 +8,12 @@ describe "generating dependencies" do
   end
 
   it "returns the manual_configuration" do
-    result = PartialKs::ConfigurationGenerator.new(manual_configuration).all
+    result = PartialKs::ModelsList.new(manual_configuration).all
     result.must_include manual_configuration.first
   end
 
   it "processes all models" do
-    result = PartialKs::ConfigurationGenerator.new(manual_configuration).all
+    result = PartialKs::ModelsList.new(manual_configuration).all
     result.size.must_equal PartialKs.all_rails_models.size
   end
 end

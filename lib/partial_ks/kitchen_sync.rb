@@ -3,7 +3,7 @@ module PartialKs
     attr_reader :models_list
 
     def initialize(manual_configuration)
-      @models_list = ConfigurationGenerator.new(manual_configuration).all
+      @models_list = ModelsList.new(manual_configuration).all
     end
 
     def run!(&block)

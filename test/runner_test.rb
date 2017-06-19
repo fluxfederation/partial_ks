@@ -5,7 +5,7 @@ describe 'end to end testing' do
     count = 0
     multi_parents = [PostTag]
 
-    generator_output = PartialKs::ConfigurationGenerator.new([]).all
+    generator_output = PartialKs::ModelsList.new([]).all
     PartialKs::Runner.new(generator_output).run! do |tables_to_filter, table_names|
       count += table_names.size
     end

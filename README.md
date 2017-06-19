@@ -25,23 +25,13 @@ manual_configuration = [
 
 NB: The first use case for this gem is to be run in conjuction with [Kitchen Sync](https://github.com/willbryant/kitchen_sync). On OSX, one can install Kitchen Sync using `brew install kitchen-sync`
 
-*TODO*
-
-* Provide a way for users to pass in manual configurations
-* Tool to run report using bundle exec
-
 # Public API
 
 It currently consists of :
 
-  - ConfigurationGenerator
-  - Runner
-    - runs
-    - reports (mostly for debugging)
+  - PartialKs::ModelsList
+  - PartialKs::KitchenSync
 
-*TODO*
-
-* Minimize Public API
 
 # Not supported
 
