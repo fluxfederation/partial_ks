@@ -11,6 +11,10 @@ module PartialKs
       manual_configuration + automatic_configuration.reject{|model, _| tables_already_present.include?(model.table_name) }
     end
 
+    def issues
+      all.select{|model, parent| parent.is_a?(PartialKs::MultiParent)}
+    end
+
     private
     def automatic_configuration
       PartialKs.all_rails_models.map do |model|

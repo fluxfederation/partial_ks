@@ -16,4 +16,8 @@ describe "generating dependencies" do
     result = PartialKs::ModelsList.new(manual_configuration).all
     result.size.must_equal PartialKs.all_rails_models.size
   end
+
+  it "can identify MultiParent as issues" do
+    PartialKs::ModelsList.new(manual_configuration).issues.map(&:last).map(&:class).must_equal [PartialKs::MultiParent]
+  end
 end
