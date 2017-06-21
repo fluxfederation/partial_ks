@@ -7,8 +7,7 @@ module PartialKs
     end
 
     def all
-      tables_already_present = manual_configuration.map(&:first).map(&:table_name)
-      manual_configuration + automatic_configuration.reject{|model, _| tables_already_present.include?(model.table_name) }
+      @all ||= manual_configuration + automatic_configuration_except_manual
     end
 
     def issues
@@ -16,8 +15,10 @@ module PartialKs
     end
 
     private
-    def automatic_configuration
-      PartialKs.all_rails_models.map do |model|
+    def automatic_configuration_except_manual
+      tables_already_present = manual_configuration.map(&:first).map(&:table_name)
+
+      PartialKs.all_rails_models.reject{|model| tables_already_present.include?(model.table_name) }.map do |model|
         table = PartialKs::Table.new(model)
         [table.model, table.inferred_parent_class]
       end
