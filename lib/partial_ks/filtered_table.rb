@@ -3,8 +3,8 @@ module PartialKs
     attr_reader :table, :parent_model, :custom_filter_relation
     delegate :table_name, :to => :table
 
-    def initialize(table, parent_model, custom_filter_relation: nil)
-      @table = table
+    def initialize(model, parent_model, custom_filter_relation: nil)
+      @table = PartialKs::Table.new(model)
       @parent_model = parent_model
       @custom_filter_relation = custom_filter_relation
     end

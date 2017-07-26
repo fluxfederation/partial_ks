@@ -7,24 +7,20 @@ module PartialKs
       @model = model
     end
 
-    # sometimes the table is present, but the model is not defined
-    # e.g. in market specific tables
-    def model?
-      model && model.respond_to?(:table_name)
-    end
-
-    def top_level_table?
-      candidate_parent_classes.empty?
+    def inferred_parent_class
+      if candidate_parent_classes.empty?
+        nil
+      elsif candidate_parent_classes.size == 1
+        candidate_parent_classes.first
+      else
+        MultiParent.new(candidate_parent_classes)
+      end
     end
 
     # NB: can't do polymorphic for now, rails errors on reflection#klass
     # see, e.g. https://github.com/rails/rails/issues/15833
     def candidate_parent_classes
       non_nullable_reflections.reject(&:polymorphic?).map(&:klass)
-    end
-
-    def parent_tables
-      belongs_to_reflections.map(&:table_name)
     end
 
     def relation_for_associated_model(klass)
@@ -53,6 +49,23 @@ module PartialKs
         fk_column = model.columns.find{|column| column.name.to_s == reflection.foreign_key.to_s }
         fk_column.nil? || fk_column.null
       end
+    end
+  end
+
+  class MultiParent
+    attr_reader :parents
+
+    def initialize(parents)
+      @parents = parents
+    end
+
+    def ==(other)
+      table_name == other.table_name if other
+    end
+
+    # only used in comparison in Runner
+    def table_name
+      parents.map(&:table_name).join(",")
     end
   end
 end

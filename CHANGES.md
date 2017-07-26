@@ -1,5 +1,13 @@
 # Changelog
 
+# 0.5.0 (planned)
+
+* New single entry point, `PartialKs::KitchenSync`. This means that Runner and ConfigurationGenerator are now internal concerns
+
+* Teach ModelsList about #issues - Basically a list of models where its "parent" is a MultiParent.
+
+* Various refactors and simplifications
+
 # 0.4.2
 
 Fix an issue where we did not support the new ApplicationRecord convention
