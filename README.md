@@ -29,7 +29,6 @@ NB: The first use case for this gem is to be run in conjuction with [Kitchen Syn
 
 It currently consists of :
 
-  - PartialKs::ModelsList
   - PartialKs::KitchenSync
 
 
