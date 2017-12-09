@@ -45,4 +45,9 @@ describe "kitchen sync filter" do
     filtered_table.kitchen_sync_filter.must_be_nil
   end
 
+  it "generates a complete where fragment from a custom filter" do
+    filter = PostTag.where(:id => 2)
+    filtered_table = PartialKs::FilteredTable.new(model, nil, custom_filter_relation: filter)
+    filtered_table.kitchen_sync_filter.must_equal({"only" => '"post_tags"."id" = 2'})
+  end
 end

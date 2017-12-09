@@ -28,7 +28,7 @@ module PartialKs
       relation = custom_filter_relation.respond_to?(:call) ? custom_filter_relation.call : custom_filter_relation
 
       if relation.is_a?(ActiveRecord::Relation) || relation.respond_to?(:where_sql)
-        relation.where_sql.to_s.sub(where_regexp, "")
+        relation.to_sql.to_s.sub(where_regexp, "")
       elsif relation.is_a?(String)
         relation.sub(where_regexp, "")
       end
