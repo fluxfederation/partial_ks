@@ -1,6 +1,6 @@
 module PartialKs
   def self.all_rails_models
-    if defined?(Rails)
+    if defined?(Rails) && Rails.respond_to?(:application)
       ::Rails.application.eager_load!
       ::Rails::Engine.subclasses.map(&:eager_load!)
     end
