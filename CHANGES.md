@@ -1,5 +1,9 @@
 # Changelog
 
+# 0.6.0 (planned)
+
+Propogate filters down the tree. If the parent downloads the whole table, do the same for the child.
+
 # 0.5.0
 
 * New single entry point, `PartialKs::KitchenSync`. This means that Runner and ConfigurationGenerator are now internal concerns

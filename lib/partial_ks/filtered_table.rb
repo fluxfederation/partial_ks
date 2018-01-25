@@ -1,26 +1,28 @@
 module PartialKs
   class FilteredTable
-    attr_reader :table, :parent_model, :custom_filter_relation
+    attr_reader :table, :parent, :custom_filter_relation
     delegate :table_name, :to => :table
 
-    def initialize(model, parent_model, custom_filter_relation: nil)
+    def initialize(model, parent, custom_filter_relation: nil)
       @table = PartialKs::Table.new(model)
-      @parent_model = parent_model
+      @parent = parent
       @custom_filter_relation = custom_filter_relation
     end
 
     def kitchen_sync_filter
       if custom_filter_relation
         {"only" => filter_based_on_custom_filter_relation}
-      elsif parent_model
-        {"only" => filter_based_on_parent_model}
+      elsif parent && parent.kitchen_sync_filter.nil?
+        nil
+      elsif parent
+        {"only" => filter_based_on_parent_model(parent.table.model)}
       else
         nil
       end
     end
 
     protected
-    def filter_based_on_parent_model
+    def filter_based_on_parent_model(parent_model)
       table.relation_for_associated_model(parent_model).where_sql.to_s.sub(where_regexp, "")
     end
 
