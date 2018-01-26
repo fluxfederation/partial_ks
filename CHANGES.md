@@ -1,6 +1,6 @@
 # Changelog
 
-# 0.6.0 (planned)
+# 0.6.0
 
 Propogate filters down the tree. If the parent downloads the whole table, do the same for the child.
 
