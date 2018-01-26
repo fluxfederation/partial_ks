@@ -26,14 +26,6 @@ describe 'running based on output from generator' do
 
   let(:runner) { PartialKs::Runner.new(generator_output) }
 
-  it "reports everything" do
-    runner.report.must_equal [
-      ["users", nil, User.where(:id => [1]), 0],
-      ["tags", nil, nil, 0],
-      ["blog_posts", User, nil, 1],
-    ]
-  end
-
   it "yields all table names" do
     expected_table_names = [User, Tag, BlogPost].map(&:table_name)
     actual_table_names   = []

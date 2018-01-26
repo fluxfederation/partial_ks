@@ -24,16 +24,6 @@ module PartialKs
       end
     end
 
-    def report
-      result = []
-      each_generation.with_index do |generation, depth|
-        generation.each do |table|
-          result << [table.table_name, table.parent.try!(:table).try!(:model), table.custom_filter_relation, depth]
-        end
-      end
-      result
-    end
-
     def each_generation
       return enum_for(:each_generation) unless block_given?
 
