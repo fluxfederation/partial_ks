@@ -24,16 +24,6 @@ module PartialKs
       end
     end
 
-    def report
-      result = []
-      each_generation.with_index do |generation, depth|
-        generation.each do |table|
-          result << [table.table_name, table.parent_model, table.custom_filter_relation, depth]
-        end
-      end
-      result
-    end
-
     def each_generation
       return enum_for(:each_generation) unless block_given?
 
@@ -43,9 +33,6 @@ module PartialKs
     end
 
     protected
-    def filtered_tables
-      @filtered_tables ||= models_list.map {|model, parent, custom_filter| PartialKs::FilteredTable.new(model, parent, custom_filter_relation: custom_filter)}
-    end
 
     def generations
       return @generations if defined?(@generations)
@@ -53,8 +40,8 @@ module PartialKs
       @generations = []
       q = []
 
-      filtered_tables.each do |filtered_table|
-        q << filtered_table if filtered_table.parent_model.nil?
+      models_list.each do |model, parent, filter|
+        q << PartialKs::FilteredTable.new(model, nil, custom_filter_relation: filter) if parent.nil?
       end
 
       until q.empty?
@@ -62,8 +49,9 @@ module PartialKs
 
         next_generation = []
         q.each do |table|
-          filtered_tables.each do |child_table|
-            next_generation << child_table if child_table.parent_model && child_table.parent_model.table_name == table.table_name
+          models_list.each do |child_model, parent, filter|
+            # I have access to parent here - link model to child_model
+            next_generation << PartialKs::FilteredTable.new(child_model, table, custom_filter_relation: filter) if parent && parent.table_name == table.table_name
           end
         end
 

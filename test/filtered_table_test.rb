@@ -2,17 +2,24 @@ require 'test_helper'
 
 describe "kitchen sync filter" do
   let(:model) { PostTag }
-  let(:parent) { Minitest::Mock.new }
+  let(:parent_model) { BlogPost }
 
   it "proxies to Table if there's parent only" do
     table_parent_relation_method = :relation_for_associated_model
     relation_mock = Minitest::Mock.new
     relation_mock.expect :where_sql, "WHERE tag_id IN (0)"
+    parent = PartialKs::FilteredTable.new(parent, nil, custom_filter_relation: BlogPost.where("1=0"))
 
     filtered_table = PartialKs::FilteredTable.new(model, parent)
     filtered_table.table.stub table_parent_relation_method, relation_mock do
       filtered_table.kitchen_sync_filter.must_equal({"only" => 'tag_id IN (0)'})
     end
+  end
+
+  it "short-circuits evaluation if the parent has no filter" do
+    parent = PartialKs::FilteredTable.new(parent, nil)
+    filtered_table = PartialKs::FilteredTable.new(model, parent)
+    filtered_table.kitchen_sync_filter.must_be_nil
   end
 
   it "uses the custom filter if provided" do
