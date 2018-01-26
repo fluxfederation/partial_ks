@@ -23,3 +23,7 @@ The building of the filter is done on the target DB.
 
 Filters are run on the source DB.
   - Note that a SQL statement from the target DB will behave differently on the source DB.
+
+## Dependencies
+
+KitchenSync -> (ModelList -> Table) -> Runner -> (FilteredTable -> Table)
