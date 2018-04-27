@@ -9,13 +9,13 @@ module PartialKs
       @custom_filter_relation = custom_filter_relation
     end
 
-    def kitchen_sync_filter
+    def where_fragment
       if custom_filter_relation
-        {"only" => filter_based_on_custom_filter_relation}
-      elsif parent && parent.kitchen_sync_filter.nil?
+        filter_based_on_custom_filter_relation
+      elsif parent && parent.where_fragment.nil?
         nil
       elsif parent
-        {"only" => filter_based_on_parent_model(parent.table.model)}
+        filter_based_on_parent_model(parent.table.model)
       else
         nil
       end
