@@ -10,6 +10,10 @@ module PartialKs
     end
 
     def where_fragment
+      to_sql&.sub(where_regexp, "")
+    end
+
+    def to_sql
       if custom_filter_relation
         filter_based_on_custom_filter_relation
       elsif parent && parent.where_fragment.nil?
@@ -23,16 +27,16 @@ module PartialKs
 
     protected
     def filter_based_on_parent_model(parent_model)
-      table.relation_for_associated_model(parent_model).where_sql.to_s.sub(where_regexp, "")
+      table.relation_for_associated_model(parent_model).to_sql.to_s
     end
 
     def filter_based_on_custom_filter_relation
       relation = custom_filter_relation.respond_to?(:call) ? custom_filter_relation.call : custom_filter_relation
 
       if relation.is_a?(ActiveRecord::Relation) || relation.respond_to?(:where_sql)
-        relation.to_sql.to_s.sub(where_regexp, "")
+        relation.to_sql.to_s
       elsif relation.is_a?(String)
-        relation.sub(where_regexp, "")
+        relation
       end
     end
 

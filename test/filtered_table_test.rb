@@ -7,7 +7,7 @@ describe "kitchen sync filter" do
   it "proxies to Table if there's parent only" do
     table_parent_relation_method = :relation_for_associated_model
     relation_mock = Minitest::Mock.new
-    relation_mock.expect :where_sql, "WHERE tag_id IN (0)"
+    relation_mock.expect :to_sql, "select * from #{model.table_name} WHERE tag_id IN (0)"
     parent = PartialKs::FilteredTable.new(parent, nil, custom_filter_relation: BlogPost.where("1=0"))
 
     filtered_table = PartialKs::FilteredTable.new(model, parent)
