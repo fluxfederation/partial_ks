@@ -1,6 +1,6 @@
 # Changelog
 
-# NEXT
+# 0.7.0
 
 * Removed Kitchen Sync specific behaviour - now yields full SQL statements (and no longer kitchen sync specific filter format)
 
