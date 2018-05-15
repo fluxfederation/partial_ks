@@ -9,6 +9,7 @@ module PartialKs
       @custom_filter_relation = custom_filter_relation
     end
 
+    # Deprecated
     def where_fragment
       to_sql&.sub(where_regexp, "")
     end
