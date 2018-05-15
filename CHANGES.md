@@ -2,7 +2,24 @@
 
 # NEXT
 
-Some internal refactors
+* Removed Kitchen Sync specific behaviour - now yields full SQL statements (and no longer kitchen sync specific filter format)
+
+To maintain previous behaviour, use the folllowing code snippet:
+
+```
+PartialKs::Sync.new(manual_configuration).run! do |tables_to_filter, tables|
+  kitchen_sync_filter = {}
+  tables_to_filter.each do |table_name, filter|
+    kitchen_sync_filter[table_name] = { "only" => filter }
+  end
+end
+```
+
+* Rename main class to PartialKs::Sync
+
+* Remove FilteredTable#where_fragment
+
+* Introduces FilteredTable#to_sql
 
 # 0.6.0
 

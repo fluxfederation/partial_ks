@@ -26,4 +26,4 @@ Filters are run on the source DB.
 
 ## Dependencies
 
-KitchenSync -> (ModelList -> Table) -> Runner -> (FilteredTable -> Table)
+Sync -> (ModelList -> Table) -> Runner -> (FilteredTable -> Table)

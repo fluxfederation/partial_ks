@@ -47,7 +47,7 @@ describe 'running based on output from generator' do
     actual_filters.size.must_equal expected_filters.size
     actual_filters.keys.must_equal expected_filters
     expected_filters.each do |table_name|
-      actual_filters[table_name]["only"].must_be_kind_of String
+      actual_filters[table_name].must_be_kind_of String
     end
   end
 end

@@ -13,8 +13,7 @@ module PartialKs
 
         generation.each do |table|
           table_names << table.table_name
-          filter_config = table.where_fragment
-          filter_config = {"only" => filter_config} if filter_config
+          filter_config = table.to_sql
 
           if !filter_config.nil?
             tables_to_filter[table.table_name] = filter_config

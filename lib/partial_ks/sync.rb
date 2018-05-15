@@ -1,5 +1,5 @@
 module PartialKs
-  class KitchenSync
+  class Sync
     attr_reader :models_list
     delegate :issues, to: :models_list
 

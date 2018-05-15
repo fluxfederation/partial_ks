@@ -1,42 +1,53 @@
 # PartialKs
 
-A library to use kitchen-sync to sync a subset of your database
+A library to sync a subset of your database
 
-# Usage
+## Usage
 
-So how does it work ?
-
+See the following example:
 
 ```
-PartialKs::KitchenSync.new(manual_configuration).run! do |tables_to_filter, tables|
+configuration = [
+  [User, nil, -> { User.where(:id => [1]) }],     # specify a subset of users. as users have no "parent", specify `nil`
+  [BlogPost, User]                                # filter blog_posts by User
+]
+
+PartialKs::Sync.new(configuration).run! do |tables_to_filter, tables|
   puts tables_to_filter.inspect
   puts tables.inspect
 end
 ```
 
-You can specify manual configurations if needed.
+## So how does it work ?
+
+The idea is that PartialKS builds a tree of models and uses
+the parent of a model to sync a subset of the database records for
+the model. E.g. 
 
 ```
-manual_configuration = [
-  [User, nil, -> { User.where(:id => [1]) }],     # specify a subset of users. as users have no parent, specify `nil`
-  [BlogPost, User]                         # filter blog_posts by User
-]
+  User id 1, 3, 5, 7
+  User -> BlogPost
 ```
 
-NB: The first use case for this gem is to be run in conjuction with [Kitchen Sync](https://github.com/willbryant/kitchen_sync). On OSX, one can install Kitchen Sync using `brew install kitchen-sync`
+PartialKS will only download blog_posts records for users 1, 3, 5, and 7.
 
-# Public API
+Most of the time PartialKS will be able to deduce the parent automatically.
+
+If a model has no "parent", PartialKS will download the whole table.
+
+If a model has "multiple parents", then PartialKS will not choose, and hence
+will download the whole table. If it is not a problem to download the whole
+table, then you can address the warning at your leisure.
+
+## Public API
 
 It currently consists of :
 
-  - PartialKs::KitchenSync
+  - PartialKs::Sync
 
-
-# Not supported
+## Not supported
 
 Things that are not supported in this version.
 
 * Polymorphic relationships
 * Tables with STI
-
-

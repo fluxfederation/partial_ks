@@ -5,7 +5,7 @@ Gem::Specification.new do |gem|
   gem.version      = PartialKs::VERSION
   gem.summary      = "Partial KS"
   gem.description  = <<-EOF
-A library to use kitchen-sync to sync a subset of your database
+A library to sync a subset of your database
 EOF
   gem.has_rdoc     = false
   gem.author       = "Thong Kuah"

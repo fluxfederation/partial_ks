@@ -9,14 +9,10 @@ module PartialKs
       @custom_filter_relation = custom_filter_relation
     end
 
-    def where_fragment
-      to_sql&.sub(where_regexp, "")
-    end
-
     def to_sql
       if custom_filter_relation
         filter_based_on_custom_filter_relation
-      elsif parent && parent.where_fragment.nil?
+      elsif parent && parent.to_sql.nil?
         nil
       elsif parent
         filter_based_on_parent_model(parent.table.model)
@@ -38,10 +34,6 @@ module PartialKs
       elsif relation.is_a?(String)
         relation
       end
-    end
-
-    def where_regexp
-      /\A.*WHERE\s*/i
     end
   end
 end
