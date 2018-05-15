@@ -15,7 +15,11 @@ PartialKs::Sync.new(manual_configuration).run! do |tables_to_filter, tables|
 end
 ```
 
-* Renamed main class to PartialKs::Sync
+* Rename main class to PartialKs::Sync
+
+* Remove FilteredTable#where_fragment
+
+* Introduces FilteredTable#to_sql
 
 # 0.6.0
 
